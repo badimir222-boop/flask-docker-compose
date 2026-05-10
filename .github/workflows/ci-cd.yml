@@ -24,14 +24,17 @@ jobs:
       - name: Wait for services
         run: sleep 20
 
+      - name: List running containers (debug)
+        run: docker ps --format "table {{.Names}}\t{{.Status}}"
+
       - name: Test API endpoint
         run: curl -f http://localhost:5000/health
 
       - name: Test PostgreSQL
-        run: docker exec compose-pro-database-1 pg_isready -U postgres
+        run: docker compose exec database pg_isready -U postgres
 
       - name: Test Redis
-        run: docker exec compose-pro-redis-1 redis-cli ping
+        run: docker compose exec redis redis-cli ping
 
       - name: Show logs if failed
         if: failure()
